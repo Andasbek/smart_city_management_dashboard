@@ -1,0 +1,187 @@
+{
+  "normal": {
+    "transport": [
+      {
+        "id": "t1",
+        "district_name": "Центр",
+        "timestamp": "2026-04-09T10:00:00",
+        "traffic_load": 40,
+        "avg_speed": 45,
+        "incidents_count": 0,
+        "congestion_level": "Низкий",
+        "status": "Green"
+      },
+      {
+        "id": "t2",
+        "district_name": "Северный район",
+        "timestamp": "2026-04-09T10:00:00",
+        "traffic_load": 30,
+        "avg_speed": 55,
+        "incidents_count": 1,
+        "congestion_level": "Низкий",
+        "status": "Green"
+      }
+    ],
+    "ecology": [
+      {
+        "id": "e1",
+        "district_name": "Центр",
+        "timestamp": "2026-04-09T10:00:00",
+        "aqi": 35,
+        "pm25": 12.5,
+        "pm10": 20.0,
+        "temperature": 22.5,
+        "risk_level": "Низкий",
+        "status": "Green"
+      },
+      {
+        "id": "e2",
+        "district_name": "Северный район",
+        "timestamp": "2026-04-09T10:00:00",
+        "aqi": 20,
+        "pm25": 8.0,
+        "pm10": 15.0,
+        "temperature": 21.0,
+        "risk_level": "Низкий",
+        "status": "Green"
+      }
+    ],
+    "alerts": []
+  },
+  "moderate": {
+    "transport": [
+      {
+        "id": "t1",
+        "district_name": "Центр",
+        "timestamp": "2026-04-09T10:00:00",
+        "traffic_load": 75,
+        "avg_speed": 25,
+        "incidents_count": 2,
+        "congestion_level": "Средний",
+        "status": "Yellow"
+      },
+      {
+        "id": "t2",
+        "district_name": "Северный район",
+        "timestamp": "2026-04-09T10:00:00",
+        "traffic_load": 45,
+        "avg_speed": 40,
+        "incidents_count": 0,
+        "congestion_level": "Низкий",
+        "status": "Green"
+      }
+    ],
+    "ecology": [
+      {
+        "id": "e1",
+        "district_name": "Центр",
+        "timestamp": "2026-04-09T10:00:00",
+        "aqi": 85,
+        "pm25": 40.5,
+        "pm10": 60.0,
+        "temperature": 24.0,
+        "risk_level": "Средний",
+        "status": "Yellow"
+      },
+      {
+        "id": "e2",
+        "district_name": "Северный район",
+        "timestamp": "2026-04-09T10:00:00",
+        "aqi": 40,
+        "pm25": 15.0,
+        "pm10": 25.0,
+        "temperature": 22.0,
+        "risk_level": "Низкий",
+        "status": "Green"
+      }
+    ],
+    "alerts": [
+      {
+        "id": "a1",
+        "type": "ПРЕДУПРЕЖДЕНИЕ",
+        "direction": "Транспорт",
+        "district_name": "Центр",
+        "severity": "Medium",
+        "message": "Транспортная нагрузка растет, средняя скорость упала до 25 км/ч.",
+        "recommendation": "Мониторинг перекрестков и корректировка фаз светофоров."
+      },
+      {
+        "id": "a2",
+        "type": "ПРЕДУПРЕЖДЕНИЕ",
+        "direction": "Экология",
+        "district_name": "Центр",
+        "severity": "Medium",
+        "message": "Уровень PM2.5 повышен. Ожидается ухудшение качества воздуха.",
+        "recommendation": "Оповестить чувствительные группы населения, ограничить въезд большегрузного транспорта."
+      }
+    ]
+  },
+  "critical": {
+    "transport": [
+      {
+        "id": "t1",
+        "district_name": "Центр",
+        "timestamp": "2026-04-09T10:00:00",
+        "traffic_load": 95,
+        "avg_speed": 10,
+        "incidents_count": 5,
+        "congestion_level": "Высокий",
+        "status": "Red"
+      },
+      {
+        "id": "t2",
+        "district_name": "Северный район",
+        "timestamp": "2026-04-09T10:00:00",
+        "traffic_load": 80,
+        "avg_speed": 18,
+        "incidents_count": 2,
+        "congestion_level": "Высокий",
+        "status": "Red"
+      }
+    ],
+    "ecology": [
+      {
+        "id": "e1",
+        "district_name": "Центр",
+        "timestamp": "2026-04-09T10:00:00",
+        "aqi": 165,
+        "pm25": 110.5,
+        "pm10": 130.0,
+        "temperature": 26.5,
+        "risk_level": "Высокий",
+        "status": "Red"
+      },
+      {
+        "id": "e2",
+        "district_name": "Северный район",
+        "timestamp": "2026-04-09T10:00:00",
+        "aqi": 95,
+        "pm25": 50.0,
+        "pm10": 70.0,
+        "temperature": 25.0,
+        "risk_level": "Средний",
+        "status": "Yellow"
+      }
+    ],
+    "alerts": [
+      {
+        "id": "a3",
+        "type": "КРИТИЧНО",
+        "direction": "Транспорт",
+        "district_name": "Центр",
+        "severity": "High",
+        "message": "Обнаружен транспортный коллапс. Масштабные пробки на основных магистралях.",
+        "recommendation": "Направить сотрудников ДПС, организовать объезд по второстепенным улицам."
+      },
+      {
+        "id": "a4",
+        "type": "КРИТИЧНО",
+        "direction": "Экология",
+        "district_name": "Центр",
+        "severity": "High",
+        "message": "Опасный уровень AQI (>150). Экстремальное загрязнение PM2.5.",
+        "recommendation": "Выпустить предупреждение для населения. Рекомендовать ношение масок."
+      }
+    ]
+  }
+}
