@@ -45,7 +45,7 @@ export default function AIChatPanel({ scenario }: { scenario: string }) {
     <section className="glass-panel chat-panel">
       <div className="chat-panel__header">
         <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
-          <MessageSquare color="#60a5fa" />
+          <MessageSquare color="#2563eb" />
           <h2 className="heading-gradient" style={{ margin: 0 }}>AI-чат оператора</h2>
         </div>
         <span className="chat-panel__badge">OpenAI</span>

@@ -52,9 +52,27 @@ export type AIInsight = {
   recommendations: string;
 };
 
+export type TrendPoint = {
+  label: string;
+  kpi: number;
+  transport_load: number;
+  ecology_aqi: number;
+  alerts_count: number;
+};
+
+export type DashboardTrends = {
+  scenario: string;
+  points: TrendPoint[];
+};
+
 export async function fetchDashboardSummary() {
   const res = await fetch(`${API_URL}/dashboard/summary`);
   return res.json() as Promise<DashboardSummary>;
+}
+
+export async function fetchDashboardTrends() {
+  const res = await fetch(`${API_URL}/dashboard/trends`);
+  return res.json() as Promise<DashboardTrends>;
 }
 
 export async function fetchTransportMetrics() {
@@ -76,7 +94,12 @@ export async function setScenario(scenarioName: string) {
   const res = await fetch(`${API_URL}/scenarios/${scenarioName}`, {
     method: "POST"
   });
-  return res.json() as Promise<{ scenario: string }>;
+  return res.json() as Promise<{ status: string; current_scenario: string }>;
+}
+
+export async function fetchCurrentScenario() {
+  const res = await fetch(`${API_URL}/scenarios/current`);
+  return res.json() as Promise<{ current_scenario: string }>;
 }
 
 export async function fetchAiInsights() {

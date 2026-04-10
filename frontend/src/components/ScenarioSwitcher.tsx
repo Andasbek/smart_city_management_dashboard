@@ -1,30 +1,47 @@
 "use client";
 
-export default function ScenarioSwitcher({ 
-  currentScenario, 
-  onSwitch 
-}: { 
+import { CircleAlert, CircleCheck, CircleDot } from "lucide-react";
+import type { LucideIcon } from "lucide-react";
+
+type ScenarioId = "normal" | "moderate" | "critical";
+
+const SCENARIOS: { id: ScenarioId; label: string; icon: LucideIcon }[] = [
+  { id: "normal", label: "Норма", icon: CircleCheck },
+  { id: "moderate", label: "Умеренная", icon: CircleDot },
+  { id: "critical", label: "Критическая", icon: CircleAlert },
+];
+
+export default function ScenarioSwitcher({
+  currentScenario,
+  onSwitch,
+  disabled,
+}: {
   currentScenario: string;
   onSwitch: (s: string) => void;
+  disabled?: boolean;
 }) {
-  const scenarios = [
-    { id: "normal", label: "Нормальное состояние" },
-    { id: "moderate", label: "Умеренная проблема" },
-    { id: "critical", label: "Критическая ситуация" }
-  ];
-
   return (
-    <div style={{ display: "flex", gap: "12px", marginBottom: "30px", alignItems: "center" }}>
-      <span style={{ color: "var(--text-muted)", fontWeight: 500, marginRight: "10px" }}>Сценарий:</span>
-      {scenarios.map((s) => (
-        <button
-          key={s.id}
-          className={`scenario-btn ${currentScenario === s.id ? "active" : ""}`}
-          onClick={() => onSwitch(s.id)}
-        >
-          {s.label}
-        </button>
-      ))}
+    <div className="scenario-switch" role="group" aria-label="Сценарий">
+      <span className="scenario-switch__label">Сценарий</span>
+      <div className="scenario-switch__group">
+        {SCENARIOS.map((s) => {
+          const Icon = s.icon;
+          const active = currentScenario === s.id;
+          return (
+            <button
+              key={s.id}
+              type="button"
+              className={`scenario-pill${active ? " scenario-pill--active" : ""}`}
+              onClick={() => onSwitch(s.id)}
+              disabled={disabled}
+              aria-pressed={active}
+            >
+              <Icon size={14} strokeWidth={2.2} />
+              <span>{s.label}</span>
+            </button>
+          );
+        })}
+      </div>
     </div>
   );
 }

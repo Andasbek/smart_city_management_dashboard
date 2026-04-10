@@ -1,26 +1,17 @@
 "use client";
 
 import { useCallback, useEffect, useState } from "react";
-import { RefreshCw } from "lucide-react";
+import { RefreshCw, Sparkles } from "lucide-react";
 import {
-  AlertItem,
-  DashboardSummary,
-  DashboardTrends,
-  EcologyMetric,
-  TransportMetric,
-  fetchAlerts,
+  AIInsight,
+  fetchAiInsights,
   fetchCurrentScenario,
-  fetchDashboardSummary,
-  fetchDashboardTrends,
-  fetchEcologyMetrics,
-  fetchTransportMetrics,
   setScenario,
 } from "@/lib/api";
-import AlertsPanel from "@/components/AlertsPanel";
-import DistrictMap from "@/components/DistrictMap";
-import KPISection from "@/components/KPISection";
+import AIChatPanel from "@/components/AIChatPanel";
+import AIInsightsCard from "@/components/AIInsightsCard";
+import RecommendedActionsPanel from "@/components/RecommendedActionsPanel";
 import ScenarioSwitcher from "@/components/ScenarioSwitcher";
-import TrendsChart from "@/components/TrendsChart";
 
 function formatRelative(date: Date | null): string {
   if (!date) return "—";
@@ -32,45 +23,31 @@ function formatRelative(date: Date | null): string {
   return date.toLocaleTimeString("ru-RU", { hour: "2-digit", minute: "2-digit" });
 }
 
-export default function Dashboard() {
+export default function AIPage() {
   const [scenario, setLocalScenario] = useState("normal");
   const [scenarioReady, setScenarioReady] = useState(false);
-  const [summary, setSummary] = useState<DashboardSummary | null>(null);
-  const [alerts, setAlerts] = useState<AlertItem[]>([]);
-  const [transport, setTransport] = useState<TransportMetric[]>([]);
-  const [ecology, setEcology] = useState<EcologyMetric[]>([]);
-  const [trends, setTrends] = useState<DashboardTrends | null>(null);
+  const [insight, setInsight] = useState<AIInsight | null>(null);
   const [updatedAt, setUpdatedAt] = useState<Date | null>(null);
   const [, setNow] = useState(Date.now());
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  const loadData = useCallback(async () => {
+  const loadInsight = useCallback(async () => {
     setLoading(true);
     setError(null);
     try {
-      const [sumRes, alertRes, transportRes, ecologyRes, trendsRes] = await Promise.all([
-        fetchDashboardSummary(),
-        fetchAlerts(),
-        fetchTransportMetrics(),
-        fetchEcologyMetrics(),
-        fetchDashboardTrends(),
-      ]);
-      setSummary(sumRes);
-      setAlerts(alertRes.alerts);
-      setTransport(transportRes.metrics);
-      setEcology(ecologyRes.metrics);
-      setTrends(trendsRes);
+      const aiRes = await fetchAiInsights();
+      setInsight(aiRes);
       setUpdatedAt(new Date());
     } catch (e) {
       console.error(e);
-      setError("Не удалось загрузить данные. Проверьте, что backend запущен.");
+      setError("Не удалось получить AI-аналитику. Проверьте, что backend запущен.");
     } finally {
       setLoading(false);
     }
   }, []);
 
-  // Sync with backend's current scenario on mount, then load data
+  // Sync with backend's current scenario on mount, then load insight
   useEffect(() => {
     let cancelled = false;
     (async () => {
@@ -83,14 +60,14 @@ export default function Dashboard() {
       } finally {
         if (!cancelled) {
           setScenarioReady(true);
-          await loadData();
+          await loadInsight();
         }
       }
     })();
     return () => {
       cancelled = true;
     };
-  }, [loadData]);
+  }, [loadInsight]);
 
   useEffect(() => {
     const id = setInterval(() => setNow(Date.now()), 15_000);
@@ -101,7 +78,7 @@ export default function Dashboard() {
     setLocalScenario(newScenario);
     try {
       await setScenario(newScenario);
-      await loadData();
+      await loadInsight();
     } catch (e) {
       console.error(e);
       setError("Не удалось переключить сценарий.");
@@ -112,10 +89,13 @@ export default function Dashboard() {
     <div className="dashboard">
       <section className="dashboard-hero">
         <div className="dashboard-hero__intro">
-          <span className="text-micro">Operational view</span>
-          <h1 className="text-h1 heading-gradient">Город под контролем</h1>
+          <span className="text-micro">
+            <Sparkles size={12} style={{ verticalAlign: "-2px", marginRight: 4 }} />
+            AI Operations
+          </span>
+          <h1 className="text-h1 heading-gradient">AI-центр анализа</h1>
           <p className="text-lead">
-            Что происходит сейчас, где проблема и что делать дальше — в одном экране.
+            Сводка ситуации, приоритеты и интерактивный диалог с моделью — всё в одном месте.
           </p>
         </div>
         <div className="dashboard-hero__controls">
@@ -129,9 +109,9 @@ export default function Dashboard() {
             <button
               type="button"
               className="dashboard-hero__refresh"
-              onClick={() => void loadData()}
+              onClick={() => void loadInsight()}
               disabled={loading}
-              aria-label="Обновить данные"
+              aria-label="Обновить AI-аналитику"
             >
               <RefreshCw size={14} strokeWidth={2.4} className={loading ? "spin" : undefined} />
               <span>Обновить</span>
@@ -143,18 +123,15 @@ export default function Dashboard() {
       {error ? <div className="dashboard-error">{error}</div> : null}
 
       <div className={`dashboard-stage${loading ? " dashboard-stage--loading" : ""}`}>
-        <KPISection summary={summary} trends={trends} />
-
         <div className="grid-12">
           <div className="col-span-7">
-            <DistrictMap transport={transport} ecology={ecology} />
+            <AIInsightsCard insight={insight} generatedAt={updatedAt} aiActive />
           </div>
           <div className="col-span-5">
-            <AlertsPanel alerts={alerts} />
+            <RecommendedActionsPanel insight={insight} />
           </div>
-
           <div className="col-span-12">
-            <TrendsChart trends={trends} />
+            <AIChatPanel scenario={scenario} />
           </div>
         </div>
       </div>

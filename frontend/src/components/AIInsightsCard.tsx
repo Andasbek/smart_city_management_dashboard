@@ -1,41 +1,78 @@
 "use client";
-import { BrainCircuit } from "lucide-react";
+
+import { BrainCircuit, ScanLine, Sparkles, Target } from "lucide-react";
 import { AIInsight } from "@/lib/api";
+import { severityLabel, textToSeverity } from "@/lib/severity";
 
-export default function AIInsightsCard({ insight }: { insight: AIInsight | null }) {
-  if (!insight) return null;
-  
+export default function AIInsightsCard({
+  insight,
+  generatedAt,
+  aiActive,
+}: {
+  insight: AIInsight | null;
+  generatedAt?: Date | null;
+  aiActive?: boolean;
+}) {
+  if (!insight) {
+    return (
+      <article className="card ai-card ai-card--skeleton" aria-busy="true">
+        <header className="ai-card__header">
+          <span className="ai-card__icon"><BrainCircuit size={18} /></span>
+          <h2 className="text-h3">AI Аналитика</h2>
+        </header>
+        <p className="text-muted">Готовим аналитическую сводку…</p>
+      </article>
+    );
+  }
+
+  const severity = textToSeverity(insight.criticality);
+  const updatedLabel = generatedAt
+    ? generatedAt.toLocaleTimeString("ru-RU", { hour: "2-digit", minute: "2-digit" })
+    : null;
+
   return (
-    <div className="glass-panel" style={{ position: "relative", overflow: "hidden", marginBottom: "30px" }}>
-      <div style={{ position: "absolute", top: "-20px", right: "-20px", opacity: 0.1 }}>
-        <BrainCircuit size={150} />
-      </div>
-      
-      <div style={{ display: "flex", alignItems: "center", gap: "10px", marginBottom: "20px" }}>
-        <BrainCircuit color={"#a78bfa"} />
-        <h2 className="heading-gradient" style={{ margin: 0 }}>AI Аналитика города</h2>
-        <span style={{ 
-          marginLeft: "auto", 
-          fontSize: "0.8rem", 
-          padding: "4px 12px", 
-          borderRadius: "20px",
-          background: insight.criticality === "Высокая" ? "var(--status-red)" : (insight.criticality === "Средняя" ? "var(--status-yellow)" : "var(--status-green)"),
-          color: insight.criticality === "Средняя" ? "#000" : "#fff",
-          fontWeight: 600
-        }}>
-          Риск: {insight.criticality}
+    <article className="card ai-card">
+      <header className="ai-card__header">
+        <span className="ai-card__icon">
+          <BrainCircuit size={18} strokeWidth={2.2} />
         </span>
-      </div>
+        <div className="ai-card__title">
+          <h2 className="text-h3">AI Аналитика</h2>
+          <span className="text-micro">Executive summary</span>
+        </div>
+        <span className={`badge badge--${severity}`}>{severityLabel(severity)} риск</span>
+      </header>
 
-      <div style={{ marginBottom: "20px" }}>
-        <h4 style={{ color: "var(--text-muted)", textTransform: "uppercase", fontSize: "0.8rem" }}>Краткая сводка ситуации</h4>
-        <p style={{ fontSize: "1.1rem", lineHeight: 1.6 }}>{insight.summary}</p>
-      </div>
+      <ul className="ai-card__rows">
+        <li className="ai-card__row">
+          <span className="ai-card__row-icon"><ScanLine size={14} /></span>
+          <div>
+            <span className="text-micro">Ситуация</span>
+            <p className="text-body">{insight.summary}</p>
+          </div>
+        </li>
+        <li className="ai-card__row">
+          <span className="ai-card__row-icon"><Sparkles size={14} /></span>
+          <div>
+            <span className="text-micro">Критичность</span>
+            <p className="text-body">{insight.criticality}</p>
+          </div>
+        </li>
+        <li className="ai-card__row ai-card__row--accent">
+          <span className="ai-card__row-icon"><Target size={14} /></span>
+          <div>
+            <span className="text-micro">Рекомендация</span>
+            <p className="text-body">{insight.recommendations}</p>
+          </div>
+        </li>
+      </ul>
 
-      <div style={{ background: "rgba(59, 130, 246, 0.1)", borderLeft: "4px solid var(--accent)", padding: "16px", borderRadius: "4px" }}>
-        <h4 style={{ color: "var(--accent)", textTransform: "uppercase", fontSize: "0.8rem", marginBottom: "8px" }}>Рекомендуемое действие</h4>
-        <p style={{ margin: 0 }}>{insight.recommendations}</p>
-      </div>
-    </div>
+      <footer className="ai-card__footer">
+        <span className={`badge ${aiActive === false ? "badge--medium" : "badge--ok"} badge--dot`}>
+          {aiActive === false ? "Fallback Mode" : "AI Active"}
+        </span>
+        {updatedLabel ? <span className="text-caption">Обновлено в {updatedLabel}</span> : null}
+      </footer>
+    </article>
   );
 }

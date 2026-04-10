@@ -1,43 +1,72 @@
 "use client";
-import { AlertCircle } from "lucide-react";
+
+import { AlertTriangle, Car, Leaf, ShieldCheck } from "lucide-react";
+import type { LucideIcon } from "lucide-react";
 import { AlertItem } from "@/lib/api";
+import { alertSeverity, severityLabel, severityRank } from "@/lib/severity";
+
+function directionLabel(direction: string): string {
+  if (direction === "Transport") return "Транспорт";
+  if (direction === "Ecology") return "Экология";
+  return direction;
+}
+
+function directionIcon(direction: string): LucideIcon {
+  if (direction === "Transport" || direction === "Транспорт") return Car;
+  if (direction === "Ecology" || direction === "Экология") return Leaf;
+  return AlertTriangle;
+}
 
 export default function AlertsPanel({ alerts }: { alerts: AlertItem[] }) {
-  return (
-    <div className="glass-panel" style={{ height: "100%" }}>
-      <div style={{ display: "flex", alignItems: "center", gap: "10px", marginBottom: "24px" }}>
-        <AlertCircle color={"var(--status-red)"} />
-        <h2 style={{ margin: 0 }}>Активные уведомления</h2>
-        <span style={{ marginLeft: "auto", background: "rgba(255,255,255,0.1)", padding: "2px 8px", borderRadius: "10px", fontSize: "0.9rem" }}>
-          {alerts?.length || 0}
-        </span>
-      </div>
+  const sorted = [...(alerts ?? [])].sort(
+    (a, b) => severityRank(alertSeverity(b.severity)) - severityRank(alertSeverity(a.severity)),
+  );
 
-      {!alerts || alerts.length === 0 ? (
-        <div style={{ color: "var(--text-muted)", textAlign: "center", padding: "40px 0" }}>
-          Активных уведомлений нет. В городе всё спокойно.
+  return (
+    <article className="card alerts-card">
+      <header className="alerts-card__header">
+        <span className="alerts-card__icon">
+          <AlertTriangle size={18} strokeWidth={2.2} />
+        </span>
+        <div>
+          <h2 className="text-h3">Лента инцидентов</h2>
+          <span className="text-micro">Сортировка по критичности</span>
+        </div>
+        <span className="badge badge--neutral">{sorted.length}</span>
+      </header>
+
+      {sorted.length === 0 ? (
+        <div className="alerts-card__empty">
+          <ShieldCheck size={24} />
+          <p className="text-secondary">В городе всё спокойно. Активных оповещений нет.</p>
         </div>
       ) : (
-        <div style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
-          {alerts.map((alert) => (
-            <div key={alert.id} style={{ 
-              borderLeft: `4px solid ${alert.severity === "High" ? "var(--status-red)" : "var(--status-yellow)"}`,
-              background: "rgba(0,0,0,0.2)",
-              padding: "16px",
-              borderRadius: "8px"
-            }}>
-              <div style={{ display: "flex", justifyContent: "space-between", marginBottom: "8px" }}>
-                <span style={{ fontWeight: 600, fontSize: "0.9rem" }}>{alert.direction === 'Transport' ? 'Транспорт' : (alert.direction === 'Ecology' ? 'Экология' : alert.direction)} - {alert.district_name}</span>
-                <span style={{ fontSize: "0.8rem", color: alert.severity === "High" ? "var(--status-red)" : "var(--status-yellow)" }}>{alert.type}</span>
-              </div>
-              <p style={{ margin: "0 0 12px 0", fontSize: "0.95rem" }}>{alert.message}</p>
-              <div style={{ fontSize: "0.85rem", color: "var(--text-muted)" }}>
-                <strong>Рекомендация:</strong> {alert.recommendation}
-              </div>
-            </div>
-          ))}
-        </div>
+        <ul className="alerts-feed">
+          {sorted.map((alert) => {
+            const severity = alertSeverity(alert.severity);
+            const Icon = directionIcon(alert.direction);
+            return (
+              <li key={alert.id} className={`alert-item alert-item--${severity}`}>
+                <span className={`alert-item__rail alert-item__rail--${severity}`} />
+                <div className="alert-item__main">
+                  <div className="alert-item__head">
+                    <span className="alert-item__direction">
+                      <Icon size={14} strokeWidth={2.2} />
+                      {directionLabel(alert.direction)} · {alert.district_name}
+                    </span>
+                    <span className={`badge badge--${severity}`}>{severityLabel(severity)}</span>
+                  </div>
+                  <p className="alert-item__message">{alert.message}</p>
+                  <p className="alert-item__action">
+                    <span className="text-micro">Действие</span>
+                    <span>{alert.recommendation}</span>
+                  </p>
+                </div>
+              </li>
+            );
+          })}
+        </ul>
       )}
-    </div>
+    </article>
   );
 }

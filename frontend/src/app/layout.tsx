@@ -1,5 +1,14 @@
 import type { Metadata } from "next";
+import { Inter } from "next/font/google";
+import AppHeader from "@/components/AppHeader";
 import "./globals.css";
+
+const inter = Inter({
+  subsets: ["latin", "cyrillic"],
+  weight: ["400", "500", "600", "700"],
+  variable: "--font-inter",
+  display: "swap",
+});
 
 export const metadata: Metadata = {
   title: "Управление Смарт-Сити",
@@ -12,14 +21,10 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
+    <html lang="ru" className={inter.variable}>
       <body>
-        <div style={{ display: "flex", minHeight: "100vh" }}>
-          {/* Main Content Area */}
-          <main style={{ flex: 1, padding: "30px", overflowY: "auto", maxWidth: "1600px", margin: "0 auto" }}>
-            {children}
-          </main>
-        </div>
+        <AppHeader />
+        <div className="container">{children}</div>
       </body>
     </html>
   );
