@@ -1,9 +1,9 @@
 "use client";
 import React, { useEffect, useState } from "react";
-import { fetchTransportMetrics } from "@/lib/api";
+import { TransportMetric, fetchTransportMetrics } from "@/lib/api";
 
 export default function TransportPage() {
-  const [metrics, setMetrics] = useState<any[]>([]);
+  const [metrics, setMetrics] = useState<TransportMetric[]>([]);
 
   useEffect(() => {
     fetchTransportMetrics().then((res) => setMetrics(res.metrics || []));

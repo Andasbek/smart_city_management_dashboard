@@ -1,7 +1,8 @@
 "use client";
 import { Activity, Car, Leaf, AlertTriangle } from "lucide-react";
+import { DashboardSummary } from "@/lib/api";
 
-export default function KPISection({ summary }: { summary: any }) {
+export default function KPISection({ summary }: { summary: DashboardSummary | null }) {
   if (!summary) return <div className="glass-panel">Loading KPIs...</div>;
 
   const kpis = [

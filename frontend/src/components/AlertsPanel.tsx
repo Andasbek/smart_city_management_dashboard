@@ -1,7 +1,8 @@
 "use client";
 import { AlertCircle } from "lucide-react";
+import { AlertItem } from "@/lib/api";
 
-export default function AlertsPanel({ alerts }: { alerts: any[] }) {
+export default function AlertsPanel({ alerts }: { alerts: AlertItem[] }) {
   return (
     <div className="glass-panel" style={{ height: "100%" }}>
       <div style={{ display: "flex", alignItems: "center", gap: "10px", marginBottom: "24px" }}>

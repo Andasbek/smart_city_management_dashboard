@@ -1,9 +1,9 @@
 "use client";
 import React, { useEffect, useState } from "react";
-import { fetchEcologyMetrics } from "@/lib/api";
+import { EcologyMetric, fetchEcologyMetrics } from "@/lib/api";
 
 export default function EcologyPage() {
-  const [metrics, setMetrics] = useState<any[]>([]);
+  const [metrics, setMetrics] = useState<EcologyMetric[]>([]);
 
   useEffect(() => {
     fetchEcologyMetrics().then((res) => setMetrics(res.metrics || []));

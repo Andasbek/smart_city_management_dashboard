@@ -1,10 +1,10 @@
 "use client";
 import React, { useEffect, useState } from "react";
-import { fetchAlerts } from "@/lib/api";
+import { AlertItem, fetchAlerts } from "@/lib/api";
 import AlertsPanel from "@/components/AlertsPanel";
 
 export default function AlertsPage() {
-  const [alerts, setAlerts] = useState<any[]>([]);
+  const [alerts, setAlerts] = useState<AlertItem[]>([]);
 
   useEffect(() => {
     fetchAlerts().then((res) => setAlerts(res.alerts || []));

@@ -1,7 +1,8 @@
 "use client";
 import { BrainCircuit } from "lucide-react";
+import { AIInsight } from "@/lib/api";
 
-export default function AIInsightsCard({ insight }: { insight: any }) {
+export default function AIInsightsCard({ insight }: { insight: AIInsight | null }) {
   if (!insight) return null;
   
   return (
